@@ -1,0 +1,3442 @@
+{
+  "Creatinine Clearance (Cockcroft-Gault Equation)": {
+    "calculator_name": "Creatinine Clearance (Cockcroft-Gault Equation)",
+    "category": "lab test",
+    "file_path": "creatinine_clearance.py",
+    "function_name": "generate_cockcroft_gault_explanation",
+    "benchmark_question": "What is the patient's Creatinine Clearance using the Cockroft-Gault Equation in terms of mL/min? You should use the patient's adjusted body weight in kg instead of the patient's actual body weight if the patient is overweight or obese based on their BMI. If the patient's BMI's normal, set their adjusted body weight to the minimum of the ideal body and actual weight. If the patient is underweight, please set their adjusted body weight to their actual body weight.",
+    "required_fields": {
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "weight": {
+        "display_name": "weight",
+        "param_key": "weight",
+        "type": "numeric",
+        "unit": "kg"
+      },
+      "height": {
+        "display_name": "height",
+        "param_key": "height",
+        "type": "numeric",
+        "unit": "cm"
+      },
+      "creatinine": {
+        "display_name": "creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      }
+    },
+    "computation_context": {
+      "formula": "CrCl = ((140 - age) \u00d7 adjusted_weight \u00d7 gender_coefficient) / (creatinine \u00d7 72)",
+      "gender_coefficient": "1.0 for Male, 0.85 for Female",
+      "adjusted_weight_rules": [
+        "Step 1: Calculate BMI = weight(kg) / (height(m))\u00b2",
+        "Step 2: If BMI < 18.5 (underweight) \u2192 use actual body weight",
+        "Step 3: If 18.5 \u2264 BMI \u2264 24.9 (normal) \u2192 use min(IBW, actual weight)",
+        "Step 4: If BMI > 24.9 (overweight/obese) \u2192 use adjusted body weight (ABW)",
+        "IBW formula Male: 50 + 2.3 \u00d7 (height_inches - 60)",
+        "IBW formula Female: 45.5 + 2.3 \u00d7 (height_inches - 60)",
+        "ABW formula: IBW + 0.4 \u00d7 (actual_weight - IBW)"
+      ],
+      "unit_note": "creatinine must be in mg/dL, weight in kg, age in years",
+      "output_unit": "mL/min"
+    }
+  },
+  "CKD-EPI Equations for Glomerular Filtration Rate": {
+    "calculator_name": "CKD-EPI Equations for Glomerular Filtration Rate",
+    "category": "lab test",
+    "file_path": "ckd-epi_2021_creatinine.py",
+    "function_name": "ckd_epi_2021_explanation",
+    "benchmark_question": "Using the 2021 CKD-EPI Creatinine equation, what is the patient's Glomerular Filtration Rate (GFR) in terms of mL/min/1.73 m\u00b2?",
+    "required_fields": {
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "creatinine": {
+        "display_name": "creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      }
+    },
+    "computation_context": {
+      "formula": "GFR = 142 \u00d7 min(Scr/\u03ba,1)^\u03b1 \u00d7 max(Scr/\u03ba,1)^(-1.200) \u00d7 0.9938^Age",
+      "sex_adjustment": "Female: \u00d7 1.012",
+      "kappa": "0.7 for Female, 0.9 for Male",
+      "alpha": "-0.241 for Female, -0.302 for Male",
+      "unit_note": "creatinine in mg/dL, age in years",
+      "output_unit": "mL/min/1.73m\u00b2"
+    }
+  },
+  "CHA2DS2-VASc Score for Atrial Fibrillation Stroke Risk": {
+    "calculator_name": "CHA2DS2-VASc Score for Atrial Fibrillation Stroke Risk",
+    "category": "risk",
+    "file_path": "cha2ds2_vasc_score.py",
+    "function_name": "generate_cha2ds2_vasc_explanation",
+    "benchmark_question": "What is the patient's CHA2DS2-VASc Score?",
+    "required_fields": {
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Diabetes history": {
+        "display_name": "Diabetes history",
+        "param_key": "diabetes",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Thromboembolism history": {
+        "display_name": "Thromboembolism history",
+        "param_key": "thromboembolism",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hypertension history": {
+        "display_name": "Hypertension history",
+        "param_key": "hypertension",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Congestive Heart Failure": {
+        "display_name": "Congestive Heart Failure",
+        "param_key": "chf",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Stroke": {
+        "display_name": "Stroke",
+        "param_key": "stroke",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Vascular disease history": {
+        "display_name": "Vascular disease history",
+        "param_key": "vascular_disease",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "scoring": {
+        "age": "<65=0pts, 65-74=1pt, \u226575=2pts",
+        "sex": "Male=0pt, Female=1pt",
+        "chf": "No=0pt, Yes=1pt",
+        "hypertension": "No=0pt, Yes=1pt",
+        "stroke_tia_thromboembolism": "None=0pts, Any one=2pts",
+        "vascular_disease": "No=0pt, Yes=1pt",
+        "diabetes": "No=0pt, Yes=1pt"
+      },
+      "important": "stroke OR tia OR thromboembolism = +2 points (not additive)",
+      "output_unit": "score 0-9"
+    }
+  },
+  "Mean Arterial Pressure (MAP)": {
+    "calculator_name": "Mean Arterial Pressure (MAP)",
+    "category": "physical",
+    "file_path": "mean_arterial_pressure.py",
+    "function_name": "mean_arterial_pressure_explanation",
+    "benchmark_question": "What is patient's mean arterial pressure in mm Hg?",
+    "required_fields": {
+      "Systolic Blood Pressure": {
+        "display_name": "Systolic Blood Pressure",
+        "param_key": "sys_bp",
+        "type": "numeric",
+        "unit": "mm hg"
+      },
+      "Diastolic Blood Pressure": {
+        "display_name": "Diastolic Blood Pressure",
+        "param_key": "dia_bp",
+        "type": "numeric",
+        "unit": "mm hg"
+      }
+    },
+    "computation_context": {
+      "formula": "MAP = (2 \u00d7 diastolic + systolic) / 3  OR  MAP = diastolic + (pulse_pressure / 3)",
+      "alternative": "MAP = diastolic + 1/3 \u00d7 (systolic - diastolic)",
+      "output_unit": "mmHg"
+    }
+  },
+  "Body Mass Index (BMI)": {
+    "calculator_name": "Body Mass Index (BMI)",
+    "category": "physical",
+    "file_path": "bmi_calculator.py",
+    "function_name": "bmi_calculator_explanation",
+    "benchmark_question": "What is the patient's body mass mass index (BMI)? Your answer should be in terms of kg/m\u00b2.",
+    "required_fields": {
+      "height": {
+        "display_name": "height",
+        "param_key": "height",
+        "type": "numeric",
+        "unit": "cm"
+      },
+      "weight": {
+        "display_name": "weight",
+        "param_key": "weight",
+        "type": "numeric",
+        "unit": "kg"
+      }
+    },
+    "computation_context": {
+      "formula": "BMI = weight(kg) / (height(m))\u00b2",
+      "unit_note": "height must be converted to meters: height_m = height_cm / 100",
+      "output_unit": "kg/m\u00b2"
+    }
+  },
+  "Calcium Correction for Hypoalbuminemia": {
+    "calculator_name": "Calcium Correction for Hypoalbuminemia",
+    "category": "lab test",
+    "file_path": "calcium_correction.py",
+    "function_name": "calculate_corrected_calcium_explanation",
+    "benchmark_question": "Using the Calcium Correction for Hypoalbuminemia formula, what is the patient's corrected calcium in mg/dL? Your may set your normal albumin concentration to be 4 g/dL.",
+    "required_fields": {
+      "Calcium": {
+        "display_name": "Calcium",
+        "param_key": "calcium",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Albumin": {
+        "display_name": "Albumin",
+        "param_key": "albumin",
+        "type": "numeric",
+        "unit": "g/dL"
+      }
+    },
+    "computation_context": {
+      "formula": "Corrected Calcium = measured_calcium + 0.8 \u00d7 (4.0 - albumin)",
+      "normal_albumin": "4.0 g/dL",
+      "unit_note": "calcium in mg/dL, albumin in g/dL",
+      "output_unit": "mg/dL"
+    }
+  },
+  "Wells' Criteria for Pulmonary Embolism": {
+    "calculator_name": "Wells' Criteria for Pulmonary Embolism",
+    "category": "risk",
+    "file_path": "wells_criteria_pe.py",
+    "function_name": "calculate_pe_wells_explanation",
+    "benchmark_question": "What is the patient's score of Wells' criteria for Pulmonary Embolism?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "Pulmonary Embolism is #1 diagnosis OR equally likely": {
+        "display_name": "Pulmonary Embolism is #1 diagnosis OR equally likely",
+        "param_key": "pe_number_one",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Immobilization for at least 3 days": {
+        "display_name": "Immobilization for at least 3 days",
+        "param_key": "immobilization_for_3days",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Surgery in the previous 4 weeks": {
+        "display_name": "Surgery in the previous 4 weeks",
+        "param_key": "surgery_in_past4weeks",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Previously Documented Pulmonary Embolism": {
+        "display_name": "Previously Documented Pulmonary Embolism",
+        "param_key": "previous_pe",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hemoptysis": {
+        "display_name": "Hemoptysis",
+        "param_key": "hemoptysis",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Clinical signs and symptoms of Deep Vein Thrombosis": {
+        "display_name": "Clinical signs and symptoms of Deep Vein Thrombosis",
+        "param_key": "clinical_dvt",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Malignancy with treatment within 6 months or palliative": {
+        "display_name": "Malignancy with treatment within 6 months or palliative",
+        "param_key": "malignancy_with_treatment",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Previously documented Deep Vein Thrombosis": {
+        "display_name": "Previously documented Deep Vein Thrombosis",
+        "param_key": "previous_dvt",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "scoring": {
+        "clinical_dvt_signs": "+3",
+        "pe_most_likely_diagnosis": "+3",
+        "heart_rate>100": "+1.5",
+        "immobilization_3days_OR_surgery_4wks": "+1.5",
+        "previous_dvt_or_pe": "+1.5",
+        "hemoptysis": "+1",
+        "malignancy": "+1"
+      },
+      "heart_rate_note": "heart_rate field: if heart_rate > 100 add 1.5 points",
+      "output_unit": "score"
+    }
+  },
+  "MDRD GFR Equation": {
+    "calculator_name": "MDRD GFR Equation",
+    "category": "lab test",
+    "file_path": "mdrd_gfr.py",
+    "function_name": "mrdr_gfr_explanation",
+    "benchmark_question": "Using the MDRD GFR Equation, what is the patient's Glomerular Filtration Rate (GFR) in terms of mL/min/1.73 m\u00b2? If the patient is black, please use the MDRD GFR Equation for blacks.",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "creatinine": {
+        "display_name": "creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "Race": {
+        "display_name": "Race",
+        "param_key": "race",
+        "type": "categorical",
+        "values": "'Hispanic' or 'White'"
+      }
+    },
+    "computation_context": {
+      "formula": "GFR = 175 \u00d7 (creatinine)^(-1.154) \u00d7 (age)^(-0.203) \u00d7 (0.742 if Female) \u00d7 (1.212 if Black)",
+      "race_note": "multiply by 1.212 only if patient is Black",
+      "sex_note": "multiply by 0.742 only if Female",
+      "unit_note": "creatinine in mg/dL",
+      "output_unit": "mL/min/1.73m\u00b2"
+    }
+  },
+  "Ideal Body Weight": {
+    "calculator_name": "Ideal Body Weight",
+    "category": "physical",
+    "file_path": "ideal_body_weight.py",
+    "function_name": "ibw_explanation",
+    "benchmark_question": "Using the Devine formula, what is the patient's ideal body weight?",
+    "required_fields": {
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "height": {
+        "display_name": "height",
+        "param_key": "height",
+        "type": "numeric",
+        "unit": "cm"
+      }
+    },
+    "computation_context": {
+      "formula_male": "IBW = 50 + 2.3 \u00d7 (height_inches - 60)",
+      "formula_female": "IBW = 45.5 + 2.3 \u00d7 (height_inches - 60)",
+      "unit_note": "height must be in inches: height_inches = height_cm / 2.54",
+      "output_unit": "kg"
+    }
+  },
+  "QTc Bazett Calculator": {
+    "calculator_name": "QTc Bazett Calculator",
+    "category": "physical",
+    "file_path": "qt_calculator_bazett.py",
+    "function_name": "bazett_calculator_explanation",
+    "benchmark_question": "Using the Bazett Formula for corrected QT interval, what is the patient's corrected QT interval in terms of msec?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "QT Interval": {
+        "display_name": "QT Interval",
+        "param_key": "qt_interval",
+        "type": "numeric",
+        "unit": "msec"
+      }
+    },
+    "computation_context": {
+      "formula": "QTc = QT / \u221a(RR interval)",
+      "rr_interval": "RR = 60 / heart_rate  (in seconds)",
+      "output_unit": "ms"
+    }
+  },
+  "Child-Pugh Score for Cirrhosis Mortality": {
+    "calculator_name": "Child-Pugh Score for Cirrhosis Mortality",
+    "category": "severity",
+    "file_path": "child_pugh_score.py",
+    "function_name": "compute_child_pugh_score_explanation",
+    "benchmark_question": "What is the patient's Child-Pugh Score?",
+    "required_fields": {
+      "international normalized ratio": {
+        "display_name": "international normalized ratio",
+        "param_key": "inr",
+        "type": "numeric"
+      },
+      "Ascites": {
+        "display_name": "Ascites",
+        "param_key": "ascites",
+        "type": "categorical",
+        "values": "'absent' or 'moderate' or 'slight'"
+      },
+      "Albumin": {
+        "display_name": "Albumin",
+        "param_key": "albumin",
+        "type": "numeric",
+        "unit": "g/dL"
+      },
+      "Bilirubin": {
+        "display_name": "Bilirubin",
+        "param_key": "bilirubin",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Encephalopathy": {
+        "display_name": "Encephalopathy",
+        "param_key": "encephalopathy",
+        "type": "categorical",
+        "values": "'Grade 1-2' or 'No Encephalopathy'"
+      }
+    },
+    "computation_context": {
+      "scoring": {
+        "bilirubin": "<2 mg/dL=1pt, 2-3 mg/dL=2pt, >3 mg/dL=3pt",
+        "albumin": ">3.5 g/dL=1pt, 2.8-3.5 g/dL=2pt, <2.8 g/dL=3pt",
+        "inr": "<1.7=1pt, 1.7-2.2=2pt, >2.2=3pt",
+        "ascites": "None=1pt, Mild=2pt, Moderate to Severe=3pt",
+        "encephalopathy": "None=1pt, Grade 1-2=2pt, Grade 3-4=3pt"
+      },
+      "interpretation": "5-6=Class A, 7-9=Class B, 10-15=Class C",
+      "output_unit": "score 5-15"
+    }
+  },
+  "Wells' Criteria for DVT": {
+    "calculator_name": "Wells' Criteria for DVT",
+    "category": "risk",
+    "file_path": "wells_criteria_dvt.py",
+    "function_name": "compute_wells_criteria_dvt_explanation",
+    "benchmark_question": "What is the patient's score of Wells' criteria for Deep Vein Thrombosis?",
+    "required_fields": {
+      "Alternative diagnosis to Deep Vein Thrombosis as likely or more likely": {
+        "display_name": "Alternative diagnosis to Deep Vein Thrombosis as likely or more likely",
+        "param_key": "alternative_to_dvt_diagnosis",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Localized tenderness along the deep venous system": {
+        "display_name": "Localized tenderness along the deep venous system",
+        "param_key": "localized_tenderness_on_deep_venuous_system",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Previously documented Deep Vein Thrombosis": {
+        "display_name": "Previously documented Deep Vein Thrombosis",
+        "param_key": "previous_dvt_documented",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Paralysis, paresis, or recent plaster immobilization of the lower extremity": {
+        "display_name": "Paralysis, paresis, or recent plaster immobilization of the lower extremity",
+        "param_key": "paralysis_paresis_immobilization_in_lower_extreme",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Entire Leg Swollen": {
+        "display_name": "Entire Leg Swollen",
+        "param_key": "leg_swollen",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Bedridden recently >3 days": {
+        "display_name": "Bedridden recently >3 days",
+        "param_key": "bedridden_for_atleast_3_days",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Calf swelling >3 centimeters compared to the other leg": {
+        "display_name": "Calf swelling >3 centimeters compared to the other leg",
+        "param_key": "calf_swelling_3cm",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Collateral (nonvaricose) superficial veins present": {
+        "display_name": "Collateral (nonvaricose) superficial veins present",
+        "param_key": "collateral_superficial_veins",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Major surgery within 12 weeks": {
+        "display_name": "Major surgery within 12 weeks",
+        "param_key": "major_surgery_in_last_12_weeks",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Active cancer": {
+        "display_name": "Active cancer",
+        "param_key": "active_cancer",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Pitting edema, confined to symptomatic leg": {
+        "display_name": "Pitting edema, confined to symptomatic leg",
+        "param_key": "pitting_edema_on_symptomatic_leg",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "scoring": {
+        "active_cancer": "+1",
+        "bedridden_>3days OR major_surgery_12wks": "+1 (combined criterion)",
+        "calf_swelling_3cm": "+1",
+        "collateral_superficial_veins": "+1",
+        "entire_leg_swollen": "+1",
+        "localized_tenderness": "+1",
+        "pitting_edema": "+1",
+        "paralysis_paresis": "+1",
+        "previous_dvt": "+1",
+        "alternative_diagnosis_equally_likely": "-2 (SUBTRACTS)"
+      },
+      "output_unit": "score"
+    }
+  },
+  "Revised Cardiac Risk Index for Pre-Operative Risk": {
+    "calculator_name": "Revised Cardiac Risk Index for Pre-Operative Risk",
+    "category": "risk",
+    "file_path": "cardiac_risk_index.py",
+    "function_name": "compute_cardiac_index_explanation",
+    "benchmark_question": "What is the patient's score of the Revised Cardiac Risk Index for Pre-Operative Risk?",
+    "required_fields": {
+      "Elevated-risk surgery": {
+        "display_name": "Elevated-risk surgery",
+        "param_key": "elevated_risk_surgery",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "History of ischemic heart disease": {
+        "display_name": "History of ischemic heart disease",
+        "param_key": "ischemic_heart_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Pre-operative treatment with insulin": {
+        "display_name": "Pre-operative treatment with insulin",
+        "param_key": "pre_operative_insulin_treatment",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "History of cerebrovascular disease": {
+        "display_name": "History of cerebrovascular disease",
+        "param_key": "cerebrovascular_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Pre-operative creatinine": {
+        "display_name": "Pre-operative creatinine",
+        "param_key": "pre_operative_creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Congestive Heart Failure criteria for the Cardiac Risk Index rule": {
+        "display_name": "Congestive Heart Failure criteria for the Cardiac Risk Index rule",
+        "param_key": "congestive_heart_failure",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "HEART Score for Major Cardiac Events": {
+    "calculator_name": "HEART Score for Major Cardiac Events",
+    "category": "risk",
+    "file_path": "heart_score.py",
+    "function_name": "compute_heart_score_explanation",
+    "benchmark_question": "What is the patient's score of the HEART Score?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Suspicion History": {
+        "display_name": "Suspicion History",
+        "param_key": "history",
+        "type": "categorical",
+        "values": "'Highly suspicious' or 'Moderately suspicious' or 'Slightly suspicious'"
+      },
+      "Electrocardiogram Test": {
+        "display_name": "Electrocardiogram Test",
+        "param_key": "electrocardiogram",
+        "type": "categorical",
+        "values": "'Non-specific repolarization disturbance' or 'Normal' or 'Significant ST deviation'"
+      },
+      "hypercholesterolemia": {
+        "display_name": "hypercholesterolemia",
+        "param_key": "hypercholesterolemia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "parent or sibling with Cardiovascular disease before age 65": {
+        "display_name": "parent or sibling with Cardiovascular disease before age 65",
+        "param_key": "family_with_cvd",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "atherosclerotic disease": {
+        "display_name": "atherosclerotic disease",
+        "param_key": "atherosclerotic_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Initial troponin": {
+        "display_name": "Initial troponin",
+        "param_key": "initial_troponin",
+        "type": "categorical",
+        "values": "'between the normal limit or up to three times the normal limit' or 'greater than three times normal limit' or 'less than or equal to normal limit'"
+      },
+      "Hypertension history": {
+        "display_name": "Hypertension history",
+        "param_key": "hypertension",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Diabetes mellitus": {
+        "display_name": "Diabetes mellitus",
+        "param_key": "diabetes_mellitus",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "obesity": {
+        "display_name": "obesity",
+        "param_key": "obesity",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "smoking": {
+        "display_name": "smoking",
+        "param_key": "smoking",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Transient Ischemic Attacks History": {
+        "display_name": "Transient Ischemic Attacks History",
+        "param_key": "tia",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Fibrosis-4 (FIB-4) Index for Liver Fibrosis": {
+    "calculator_name": "Fibrosis-4 (FIB-4) Index for Liver Fibrosis",
+    "category": "lab test",
+    "file_path": "fibrosis_4.py",
+    "function_name": "compute_fib4_explanation",
+    "benchmark_question": "What is the patient's score of the Fibrosis 4 Index?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Alanine aminotransferase": {
+        "display_name": "Alanine aminotransferase",
+        "param_key": "alt",
+        "type": "numeric",
+        "unit": "U/L"
+      },
+      "Aspartate aminotransferase": {
+        "display_name": "Aspartate aminotransferase",
+        "param_key": "ast",
+        "type": "numeric",
+        "unit": "U/L"
+      },
+      "Platelet count": {
+        "display_name": "Platelet count",
+        "param_key": "platelet_count",
+        "type": "numeric",
+        "unit": "\u00b5L"
+      }
+    },
+    "computation_context": {
+      "formula": "FIB-4 = (age \u00d7 AST) / (platelet_count \u00d7 \u221aALT)",
+      "unit_note": "platelet_count in 10^9/L, ALT and AST in U/L",
+      "output_unit": "score (dimensionless)"
+    }
+  },
+  "Centor Score (Modified/McIsaac) for Strep Pharyngitis": {
+    "calculator_name": "Centor Score (Modified/McIsaac) for Strep Pharyngitis",
+    "category": "severity",
+    "file_path": "centor_score.py",
+    "function_name": "compute_centor_score_explanation",
+    "benchmark_question": "What is the patient's Centor Score?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Exudate or swelling on tonsils": {
+        "display_name": "Exudate or swelling on tonsils",
+        "param_key": "exudate_swelling_tonsils",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Temperature": {
+        "display_name": "Temperature",
+        "param_key": "temperature",
+        "type": "numeric",
+        "unit": "degrees celsius"
+      },
+      "Tender/swollen anterior cervical lymph nodes": {
+        "display_name": "Tender/swollen anterior cervical lymph nodes",
+        "param_key": "tender_lymph_nodes",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Cough Absent": {
+        "display_name": "Cough Absent",
+        "param_key": "cough_absent",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Maintenance Fluids Calculations": {
+    "calculator_name": "Maintenance Fluids Calculations",
+    "category": "physical",
+    "file_path": "maintenance_fluid_calc.py",
+    "function_name": "maintenance_fluid_explanation",
+    "benchmark_question": "Based on the patient's weight, what is the patient's maintenance fluid in mL/hr? ",
+    "required_fields": {
+      "weight": {
+        "display_name": "weight",
+        "param_key": "weight",
+        "type": "numeric",
+        "unit": "kg"
+      }
+    },
+    "computation_context": {
+      "formula": "4-2-1 rule: 4 mL/kg/hr for first 10kg + 2 mL/kg/hr for next 10kg + 1 mL/kg/hr for remaining kg",
+      "example": "70kg patient: 4\u00d710 + 2\u00d710 + 1\u00d750 = 40+20+50 = 110 mL/hr",
+      "output_unit": "mL/hr"
+    }
+  },
+  "MELD Na (UNOS/OPTN)": {
+    "calculator_name": "MELD Na (UNOS/OPTN)",
+    "category": "lab test",
+    "file_path": "meldna.py",
+    "function_name": "compute_meldna_explanation",
+    "benchmark_question": "What is the patient's MELD Na (UNOS/OPTN) score?",
+    "required_fields": {
+      "creatinine": {
+        "display_name": "creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Continuous veno-venous hemodialysis for \u226524 hours in the past week": {
+        "display_name": "Continuous veno-venous hemodialysis for \u226524 hours in the past week",
+        "param_key": "cvvhd",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Dialysis at least twice in the past week": {
+        "display_name": "Dialysis at least twice in the past week",
+        "param_key": "dialysis_twice",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "international normalized ratio": {
+        "display_name": "international normalized ratio",
+        "param_key": "inr",
+        "type": "numeric"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Bilirubin": {
+        "display_name": "Bilirubin",
+        "param_key": "bilirubin",
+        "type": "numeric",
+        "unit": "mg/dL"
+      }
+    },
+    "computation_context": {
+      "formula_step1": "MELD = 4.4 \u00d7 ln(max(INR, 1)) + 9.57 \u00d7 ln(max(creatinine, 1)) + 3.78 \u00d7 ln(max(bilirubin, 1)) + 6.43",
+      "creatinine_cap": "If on dialysis (cvvhd OR dialysis_twice), set creatinine = 4.0. Cap creatinine at 4.0 max.",
+      "formula_step2": "MELD-Na = MELD + 1.32 \u00d7 (137 - sodium) - [0.033 \u00d7 MELD \u00d7 (137 - sodium)]",
+      "sodium_cap": "Cap sodium: min=125, max=137 mEq/L before applying formula",
+      "output_unit": "score"
+    }
+  },
+  "HAS-BLED Score for Major Bleeding Risk": {
+    "calculator_name": "HAS-BLED Score for Major Bleeding Risk",
+    "category": "risk",
+    "file_path": "has_bled_score.py",
+    "function_name": "compute_has_bled_score_explanation",
+    "benchmark_question": "What is the patient's HAS-BLED score?",
+    "required_fields": {
+      "Liver disease criteria for the HAS-BLED rule": {
+        "display_name": "Liver disease criteria for the HAS-BLED rule",
+        "param_key": "liver_disease_has_bled",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Renal disease criteria for the HAS-BLED rule": {
+        "display_name": "Renal disease criteria for the HAS-BLED rule",
+        "param_key": "renal_disease_has_bled",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hypertension": {
+        "display_name": "Hypertension",
+        "param_key": "hypertension",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Stroke": {
+        "display_name": "Stroke",
+        "param_key": "stroke",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Medication usage predisposing to bleeding": {
+        "display_name": "Medication usage predisposing to bleeding",
+        "param_key": "medications_for_bleeding",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Number of Alcoholic Drinks Per Week": {
+        "display_name": "Number of Alcoholic Drinks Per Week",
+        "param_key": "alcoholic_drinks",
+        "type": "numeric"
+      },
+      "Prior major bleeding or predisposition to bleeding": {
+        "display_name": "Prior major bleeding or predisposition to bleeding",
+        "param_key": "prior_bleeding",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Labile international normalized ratio": {
+        "display_name": "Labile international normalized ratio",
+        "param_key": "labile_inr",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Sodium Correction for Hyperglycemia": {
+    "calculator_name": "Sodium Correction for Hyperglycemia",
+    "category": "lab test",
+    "file_path": "sodium_correction_hyperglycemia.py",
+    "function_name": "compute_sodium_correction_hyperglycemia_explanation",
+    "benchmark_question": "What is the patient's corrected sodium concentration for hyperglycemia in terms of mEq/L? Use the sodium correction equation based on the one derived in Hillier, 1999.",
+    "required_fields": {
+      "Glucose": {
+        "display_name": "Glucose",
+        "param_key": "glucose",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mmol/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Corrected Sodium = measured_sodium + 0.024 \u00d7 (glucose - 100)  [Hillier 1999]",
+      "alternative_old": "Old formula: + 1.6 per 100 mg/dL glucose above 100",
+      "output_unit": "mEq/L"
+    }
+  },
+  "Glasgow-Blatchford Bleeding Score (GBS)": {
+    "calculator_name": "Glasgow-Blatchford Bleeding Score (GBS)",
+    "category": "severity",
+    "file_path": "glasgow_bleeding_score.py",
+    "function_name": "glasgow_bleeding_score_explanation",
+    "benchmark_question": "What is the patient's Glasgow-Blatchford Bleeding Score?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "Blood Urea Nitrogen (BUN)": {
+        "display_name": "Blood Urea Nitrogen (BUN)",
+        "param_key": "bun",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "Hemoglobin": {
+        "display_name": "Hemoglobin",
+        "param_key": "hemoglobin",
+        "type": "numeric",
+        "unit": "g/dL"
+      },
+      "Melena Present": {
+        "display_name": "Melena Present",
+        "param_key": "melena_present",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Systolic Blood Pressure": {
+        "display_name": "Systolic Blood Pressure",
+        "param_key": "sys_bp",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "Cardiac Failure Present": {
+        "display_name": "Cardiac Failure Present",
+        "param_key": "cardiac_failure",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hepatic disease history": {
+        "display_name": "Hepatic disease history",
+        "param_key": "hepatic_disease_history",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Recent Syncope": {
+        "display_name": "Recent Syncope",
+        "param_key": "syncope",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard Glasgow-Blatchford scoring criteria"
+    }
+  },
+  "Serum Osmolality": {
+    "calculator_name": "Serum Osmolality",
+    "category": "lab test",
+    "file_path": "sOsm.py",
+    "function_name": "compute_serum_osmolality_explanation",
+    "benchmark_question": "What is the patient's serum osmolality in terms of mOsm/kg? You may take the alcohol content as 0 mg/dL.",
+    "required_fields": {
+      "Blood Urea Nitrogen (BUN)": {
+        "display_name": "Blood Urea Nitrogen (BUN)",
+        "param_key": "bun",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Glucose": {
+        "display_name": "Glucose",
+        "param_key": "glucose",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Serum Osmolality = 2 \u00d7 sodium + (glucose / 18) + (BUN / 2.8)",
+      "alcohol_note": "alcohol contribution = 0 unless specified",
+      "output_unit": "mOsm/kg"
+    }
+  },
+  "HOMA-IR (Homeostatic Model Assessment for Insulin Resistance)": {
+    "calculator_name": "HOMA-IR (Homeostatic Model Assessment for Insulin Resistance)",
+    "category": "lab test",
+    "file_path": "homa_ir.py",
+    "function_name": "compute_homa_ir_explanation",
+    "benchmark_question": "What is the patient's HOMA-IR score?",
+    "required_fields": {
+      "Glucose": {
+        "display_name": "Glucose",
+        "param_key": "glucose",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Insulin": {
+        "display_name": "Insulin",
+        "param_key": "insulin",
+        "type": "numeric",
+        "unit": "\u00b5IU/mL"
+      }
+    },
+    "computation_context": {
+      "formula": "HOMA-IR = (fasting_glucose_mg_dL \u00d7 fasting_insulin_\u00b5U_mL) / 405",
+      "output_unit": "score"
+    }
+  },
+  "Charlson Comorbidity Index (CCI)": {
+    "calculator_name": "Charlson Comorbidity Index (CCI)",
+    "category": "risk",
+    "file_path": "cci.py",
+    "function_name": "compute_cci_explanation",
+    "benchmark_question": "What is the patient's Charlson Comorbidity Index (CCI)?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Peripheral vascular disease": {
+        "display_name": "Peripheral vascular disease",
+        "param_key": "peripheral_vascular_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Cerebrovascular Accident": {
+        "display_name": "Cerebrovascular Accident",
+        "param_key": "cva",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Connective tissue disease": {
+        "display_name": "Connective tissue disease",
+        "param_key": "connective_tissue_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Liver disease severity": {
+        "display_name": "Liver disease severity",
+        "param_key": "liver_disease",
+        "type": "categorical",
+        "values": "'mild' or 'none'"
+      },
+      "Hemiplegia": {
+        "display_name": "Hemiplegia",
+        "param_key": "hemiplegia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Moderate to severe Chronic Kidney Disease": {
+        "display_name": "Moderate to severe Chronic Kidney Disease",
+        "param_key": "moderate_to_severe_ckd",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Solid tumor": {
+        "display_name": "Solid tumor",
+        "param_key": "solid_tumor",
+        "type": "categorical",
+        "values": "'localized' or 'metastatic' or 'none'"
+      },
+      "Leukemia": {
+        "display_name": "Leukemia",
+        "param_key": "leukemia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Lymphoma": {
+        "display_name": "Lymphoma",
+        "param_key": "lymphoma",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Myocardial infarction": {
+        "display_name": "Myocardial infarction",
+        "param_key": "mi",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Congestive Heart Failure": {
+        "display_name": "Congestive Heart Failure",
+        "param_key": "chf",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Transient Ischemic Attacks History": {
+        "display_name": "Transient Ischemic Attacks History",
+        "param_key": "tia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Dementia": {
+        "display_name": "Dementia",
+        "param_key": "dementia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Chronic Pulmonary Disease": {
+        "display_name": "Chronic Pulmonary Disease",
+        "param_key": "copd",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Peptic ulcer disease": {
+        "display_name": "Peptic ulcer disease",
+        "param_key": "peptic_ucler_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Diabetes mellitus": {
+        "display_name": "Diabetes mellitus",
+        "param_key": "diabetes_mellitus",
+        "type": "categorical",
+        "values": "'end-organ damage' or 'none or diet-controlled' or 'uncomplicated'"
+      },
+      "AIDS": {
+        "display_name": "AIDS",
+        "param_key": "aids",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "FeverPAIN Score for Strep Pharyngitis": {
+    "calculator_name": "FeverPAIN Score for Strep Pharyngitis",
+    "category": "diagnosis",
+    "file_path": "feverpain.py",
+    "function_name": "compute_fever_pain_explanation",
+    "benchmark_question": "What is the patient's FeverPAIN score?",
+    "required_fields": {
+      "Symptom onset <=3 days": {
+        "display_name": "Symptom onset <=3 days",
+        "param_key": "symptom_onset",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Purulent tonsils": {
+        "display_name": "Purulent tonsils",
+        "param_key": "purulent_tonsils",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Fever in past 24 hours": {
+        "display_name": "Fever in past 24 hours",
+        "param_key": "fever_24_hours",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Severe tonsil inflammation": {
+        "display_name": "Severe tonsil inflammation",
+        "param_key": "severe_tonsil_inflammation",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Absence of cough or coryza": {
+        "display_name": "Absence of cough or coryza",
+        "param_key": "cough_coryza_absent",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Free Water Deficit": {
+    "calculator_name": "Free Water Deficit",
+    "category": "lab test",
+    "file_path": "free_water_deficit.py",
+    "function_name": "free_water_deficit_explanation",
+    "benchmark_question": "What is the patient's free water deficit in terms of kg? The desired serum sodium concentration is 140 mEq/L.",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "weight": {
+        "display_name": "weight",
+        "param_key": "weight",
+        "type": "numeric",
+        "unit": "kg"
+      },
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      }
+    },
+    "computation_context": {
+      "formula": "FWD = TBW \u00d7 ((sodium / 140) - 1)",
+      "tbw_male": "TBW = 0.6 \u00d7 weight_kg",
+      "tbw_female": "TBW = 0.5 \u00d7 weight_kg",
+      "output_unit": "liters"
+    }
+  },
+  "Anion Gap": {
+    "calculator_name": "Anion Gap",
+    "category": "lab test",
+    "file_path": "anion_gap.py",
+    "function_name": "compute_anion_gap_explanation",
+    "benchmark_question": "What is the patient's anion gap in terms of mEq/L? ",
+    "required_fields": {
+      "Chloride": {
+        "display_name": "Chloride",
+        "param_key": "chloride",
+        "type": "numeric",
+        "unit": "mmol/L"
+      },
+      "Bicarbonate": {
+        "display_name": "Bicarbonate",
+        "param_key": "bicarbonate",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Anion Gap = sodium - (chloride + bicarbonate)",
+      "normal_range": "8-12 mEq/L",
+      "output_unit": "mEq/L"
+    }
+  },
+  "CURB-65 Score for Pneumonia Severity": {
+    "calculator_name": "CURB-65 Score for Pneumonia Severity",
+    "category": "risk",
+    "file_path": "curb_65.py",
+    "function_name": "curb_65_explanation",
+    "benchmark_question": "What is the patient's CURB-65 score?",
+    "required_fields": {
+      "Systolic Blood Pressure": {
+        "display_name": "Systolic Blood Pressure",
+        "param_key": "sys_bp",
+        "type": "numeric",
+        "unit": "mm hg"
+      },
+      "respiratory rate": {
+        "display_name": "respiratory rate",
+        "param_key": "respiratory_rate",
+        "type": "numeric",
+        "unit": "breaths per minute"
+      },
+      "Blood Urea Nitrogen (BUN)": {
+        "display_name": "Blood Urea Nitrogen (BUN)",
+        "param_key": "bun",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Confusion": {
+        "display_name": "Confusion",
+        "param_key": "confusion",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Diastolic Blood Pressure": {
+        "display_name": "Diastolic Blood Pressure",
+        "param_key": "dia_bp",
+        "type": "numeric",
+        "unit": "mm hg"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      }
+    },
+    "computation_context": {
+      "scoring": {
+        "confusion": "+1",
+        "bun>19": "+1 (BUN > 19 mg/dL)",
+        "respiratory_rate>=30": "+1",
+        "systolic_bp<90_OR_diastolic<=60": "+1",
+        "age>=65": "+1"
+      },
+      "output_unit": "score 0-5"
+    }
+  },
+  "Fractional Excretion of Sodium (FENa)": {
+    "calculator_name": "Fractional Excretion of Sodium (FENa)",
+    "category": "lab test",
+    "file_path": "compute_fena.py",
+    "function_name": "compute_fena_explanation",
+    "benchmark_question": "What is the patient's Fractional Excretion of Sodium (FENa)? Please return your answer as a percentage value.",
+    "required_fields": {
+      "Urine creatinine": {
+        "display_name": "Urine creatinine",
+        "param_key": "urine_creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "creatinine": {
+        "display_name": "creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Urine sodium": {
+        "display_name": "Urine sodium",
+        "param_key": "urine_sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      }
+    },
+    "computation_context": {
+      "formula": "FENa = (urine_sodium \u00d7 serum_creatinine) / (serum_sodium \u00d7 urine_creatinine) \u00d7 100",
+      "output_unit": "percentage %"
+    }
+  },
+  "LDL Calculated": {
+    "calculator_name": "LDL Calculated",
+    "category": "lab test",
+    "file_path": "ldl_calculated.py",
+    "function_name": "compute_ldl_explanation",
+    "benchmark_question": "What is the patient's LDL cholestrol concentration? Please outuput your answer in terms of mg/dL.",
+    "required_fields": {
+      "Total cholesterol": {
+        "display_name": "Total cholesterol",
+        "param_key": "total_cholesterol",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "high-density lipoprotein cholesterol": {
+        "display_name": "high-density lipoprotein cholesterol",
+        "param_key": "hdl_cholesterol",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Triglycerides": {
+        "display_name": "Triglycerides",
+        "param_key": "triglycerides",
+        "type": "numeric",
+        "unit": "mg/dL"
+      }
+    },
+    "computation_context": {
+      "formula": "LDL = total_cholesterol - HDL - (triglycerides / 5)  [Friedewald equation]",
+      "output_unit": "mg/dL"
+    }
+  },
+  "Framingham Risk Score for Hard Coronary Heart Disease": {
+    "calculator_name": "Framingham Risk Score for Hard Coronary Heart Disease",
+    "category": "lab test",
+    "file_path": "framingham_risk_score.py",
+    "function_name": "framingham_risk_score_explanation",
+    "benchmark_question": "Based on the Framingham Risk Score for Hard Coronary Heart Disease, what is the likelihood of 10-year risk of MI or death for this patient? Please return your answer as a percentage value.",
+    "required_fields": {
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Systolic Blood Pressure": {
+        "display_name": "Systolic Blood Pressure",
+        "param_key": "sys_bp",
+        "type": "numeric",
+        "unit": "mm hg"
+      },
+      "Smoker": {
+        "display_name": "Smoker",
+        "param_key": "smoker",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Total cholesterol": {
+        "display_name": "Total cholesterol",
+        "param_key": "total_cholesterol",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "high-density lipoprotein cholesterol": {
+        "display_name": "high-density lipoprotein cholesterol",
+        "param_key": "hdl_cholesterol",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Blood pressure being treated with medicines": {
+        "display_name": "Blood pressure being treated with medicines",
+        "param_key": "bp_medicine",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Uses sex-specific lookup tables for age, total cholesterol, HDL, systolic BP, smoking",
+      "output_unit": "% 10-year risk"
+    }
+  },
+  "PERC Rule for Pulmonary Embolism": {
+    "calculator_name": "PERC Rule for Pulmonary Embolism",
+    "category": "diagnosis",
+    "file_path": "perc_rule.py",
+    "function_name": "compute_perc_rule_explanation",
+    "benchmark_question": "What are the number of criteria met for the PERC Rule for Pulmonary Embolism (PE)?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "O\u2082 saturation percentage": {
+        "display_name": "O\u2082 saturation percentage",
+        "param_key": "oxygen_sat",
+        "type": "numeric",
+        "unit": "%"
+      },
+      "Unilateral Leg Swelling": {
+        "display_name": "Unilateral Leg Swelling",
+        "param_key": "unilateral_leg_swelling",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hormone use": {
+        "display_name": "Hormone use",
+        "param_key": "hormonal_use",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Recent surgery or trauma": {
+        "display_name": "Recent surgery or trauma",
+        "param_key": "recent_surgery_or_trauma",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Previously Documented Pulmonary Embolism": {
+        "display_name": "Previously Documented Pulmonary Embolism",
+        "param_key": "previous_pe",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hemoptysis": {
+        "display_name": "Hemoptysis",
+        "param_key": "hemoptysis",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Previously documented Deep Vein Thrombosis": {
+        "display_name": "Previously documented Deep Vein Thrombosis",
+        "param_key": "previous_dvt",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "SIRS Criteria": {
+    "calculator_name": "SIRS Criteria",
+    "category": "diagnosis",
+    "file_path": "sirs_criteria.py",
+    "function_name": "sirs_criteria_explanation",
+    "benchmark_question": "What are the number of SIRS critiera met by the patient?",
+    "required_fields": {
+      "Temperature": {
+        "display_name": "Temperature",
+        "param_key": "temperature",
+        "type": "numeric",
+        "unit": "degrees celsius"
+      },
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "respiratory rate": {
+        "display_name": "respiratory rate",
+        "param_key": "respiratory_rate",
+        "type": "numeric",
+        "unit": "breaths per minute"
+      },
+      "White blood cell count": {
+        "display_name": "White blood cell count",
+        "param_key": "wbc",
+        "type": "numeric",
+        "unit": "mm^3"
+      },
+      "PaCO2": {
+        "display_name": "PaCO2",
+        "param_key": "paco2",
+        "type": "numeric",
+        "unit": "mm hg"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "QTc Fridericia Calculator": {
+    "calculator_name": "QTc Fridericia Calculator",
+    "category": "physical",
+    "file_path": "qt_calculator_fredericia.py",
+    "function_name": "fredericia_calculator_explanation",
+    "benchmark_question": "Using the Fridericia Formula for corrected QT interval, what is the patient's corrected QT interval in terms of msec?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "QT Interval": {
+        "display_name": "QT Interval",
+        "param_key": "qt_interval",
+        "type": "numeric",
+        "unit": "msec"
+      }
+    },
+    "computation_context": {
+      "formula": "QTc = QT / (RR)^(1/3)",
+      "rr_interval": "RR = 60 / heart_rate (in seconds)",
+      "output_unit": "ms"
+    }
+  },
+  "QTc Framingham Calculator": {
+    "calculator_name": "QTc Framingham Calculator",
+    "category": "physical",
+    "file_path": "qt_calculator_framingham.py",
+    "function_name": "framingham_calculator_explanation",
+    "benchmark_question": "Using the Framingham Formula for corrected QT interval, what is the patient's corrected QT interval in terms of msec?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "QT Interval": {
+        "display_name": "QT Interval",
+        "param_key": "qt_interval",
+        "type": "numeric",
+        "unit": "msec"
+      }
+    },
+    "computation_context": {
+      "formula": "QTc = QT + 0.154 \u00d7 (1 - RR)",
+      "rr_interval": "RR = 60 / heart_rate (in seconds)",
+      "output_unit": "ms"
+    }
+  },
+  "QTc Hodges Calculator": {
+    "calculator_name": "QTc Hodges Calculator",
+    "category": "physical",
+    "file_path": "qt_calculator_hodges.py",
+    "function_name": "hodges_calculator_explanation",
+    "benchmark_question": "Using the Hodges Formula for corrected QT interval, what is the patient's corrected QT interval in terms of msec?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "QT Interval": {
+        "display_name": "QT Interval",
+        "param_key": "qt_interval",
+        "type": "numeric",
+        "unit": "msec"
+      }
+    },
+    "computation_context": {
+      "formula": "QTc = QT + 1.75 \u00d7 (heart_rate - 60)",
+      "output_unit": "ms"
+    }
+  },
+  "QTc Rautaharju Calculator": {
+    "calculator_name": "QTc Rautaharju Calculator",
+    "category": "physical",
+    "file_path": "qt_calculator_rautaharju.py",
+    "function_name": "rautaharju_calculator_explanation",
+    "benchmark_question": "Using the Rautaharju Formula for corrected QT interval, what is the patient's corrected QT interval in terms of msec?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "QT Interval": {
+        "display_name": "QT Interval",
+        "param_key": "qt_interval",
+        "type": "numeric",
+        "unit": "msec"
+      }
+    },
+    "computation_context": {
+      "formula": "QTc = QT \u00d7 (120 + heart_rate) / 180",
+      "output_unit": "ms"
+    }
+  },
+  "Body Surface Area Calculator": {
+    "calculator_name": "Body Surface Area Calculator",
+    "category": "physical",
+    "file_path": "bsa_calculator.py",
+    "function_name": "bsa_calculator_explanation",
+    "benchmark_question": "What is the patient's body surface area? Please output your answer in terms of m\u00b2.",
+    "required_fields": {
+      "weight": {
+        "display_name": "weight",
+        "param_key": "weight",
+        "type": "numeric",
+        "unit": "kg"
+      },
+      "height": {
+        "display_name": "height",
+        "param_key": "height",
+        "type": "numeric",
+        "unit": "cm"
+      }
+    },
+    "computation_context": {
+      "formula": "BSA = \u221a(height_cm \u00d7 weight_kg / 3600)  [Mosteller formula]",
+      "output_unit": "m\u00b2"
+    }
+  },
+  "Adjusted Body Weight": {
+    "calculator_name": "Adjusted Body Weight",
+    "category": "physical",
+    "file_path": "adjusted_body_weight.py",
+    "function_name": "abw_explanation",
+    "benchmark_question": "Using the adjusted body weight formula, what is the patient's adjusted body weight in terms of kg?",
+    "required_fields": {
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "weight": {
+        "display_name": "weight",
+        "param_key": "weight",
+        "type": "numeric",
+        "unit": "kg"
+      },
+      "height": {
+        "display_name": "height",
+        "param_key": "height",
+        "type": "numeric",
+        "unit": "cm"
+      }
+    },
+    "computation_context": {
+      "formula": "ABW = IBW + 0.4 \u00d7 (actual_weight - IBW)",
+      "prerequisite": "Calculate IBW first using Devine formula",
+      "output_unit": "kg"
+    }
+  },
+  "Delta Gap": {
+    "calculator_name": "Delta Gap",
+    "category": "lab test",
+    "file_path": "delta_gap.py",
+    "function_name": "compute_delta_gap_explanation",
+    "benchmark_question": "What is the patient's delta gap in mEq/L?",
+    "required_fields": {
+      "Chloride": {
+        "display_name": "Chloride",
+        "param_key": "chloride",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Bicarbonate": {
+        "display_name": "Bicarbonate",
+        "param_key": "bicarbonate",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Delta Gap = Anion Gap - 12  (where AG = sodium - chloride - bicarbonate)",
+      "output_unit": "mEq/L"
+    }
+  },
+  "Delta Ratio": {
+    "calculator_name": "Delta Ratio",
+    "category": "lab test",
+    "file_path": "delta_ratio.py",
+    "function_name": "compute_delta_ratio_explanation",
+    "benchmark_question": "What is the patient's delta ratio?",
+    "required_fields": {
+      "Chloride": {
+        "display_name": "Chloride",
+        "param_key": "chloride",
+        "type": "numeric",
+        "unit": "mmol/L"
+      },
+      "Bicarbonate": {
+        "display_name": "Bicarbonate",
+        "param_key": "bicarbonate",
+        "type": "numeric",
+        "unit": "mmol/L"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mmol/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Delta Ratio = (Anion Gap - 12) / (24 - bicarbonate)",
+      "output_unit": "ratio"
+    }
+  },
+  "Albumin Corrected Anion Gap": {
+    "calculator_name": "Albumin Corrected Anion Gap",
+    "category": "lab test",
+    "file_path": "albumin_corrected_anion.py",
+    "function_name": "compute_albumin_corrected_anion_explanation",
+    "benchmark_question": "What is the patient's albumin corrected anion gap in mEq/L?",
+    "required_fields": {
+      "Chloride": {
+        "display_name": "Chloride",
+        "param_key": "chloride",
+        "type": "numeric",
+        "unit": "mmol/L"
+      },
+      "Albumin": {
+        "display_name": "Albumin",
+        "param_key": "albumin",
+        "type": "numeric",
+        "unit": "g/dL"
+      },
+      "Bicarbonate": {
+        "display_name": "Bicarbonate",
+        "param_key": "bicarbonate",
+        "type": "numeric",
+        "unit": "mmol/L"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mmol/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Corrected AG = AG + 2.5 \u00d7 (4 - albumin)",
+      "where": "AG = sodium - chloride - bicarbonate",
+      "output_unit": "mEq/L"
+    }
+  },
+  "Albumin Corrected Delta Gap": {
+    "calculator_name": "Albumin Corrected Delta Gap",
+    "category": "lab test",
+    "file_path": "albumin_corrected_delta_gap.py",
+    "function_name": "compute_albumin_corrected_delta_gap_explanation",
+    "benchmark_question": "What is the patient's albumin corrected delta gap in mEq/L?",
+    "required_fields": {
+      "Albumin": {
+        "display_name": "Albumin",
+        "param_key": "albumin",
+        "type": "numeric",
+        "unit": "g/dL"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mmol/L"
+      },
+      "Chloride": {
+        "display_name": "Chloride",
+        "param_key": "chloride",
+        "type": "numeric",
+        "unit": "mmol/L"
+      },
+      "Bicarbonate": {
+        "display_name": "Bicarbonate",
+        "param_key": "bicarbonate",
+        "type": "numeric",
+        "unit": "mmol/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Albumin Corrected Delta Gap = Albumin Corrected AG - 12",
+      "output_unit": "mEq/L"
+    }
+  },
+  "Albumin Corrected Delta Ratio": {
+    "calculator_name": "Albumin Corrected Delta Ratio",
+    "category": "lab test",
+    "file_path": "albumin_delta_ratio.py",
+    "function_name": "compute_albumin_delta_ratio_explanation",
+    "benchmark_question": "What is the patient's albumin corrected delta ratio?",
+    "required_fields": {
+      "Chloride": {
+        "display_name": "Chloride",
+        "param_key": "chloride",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Albumin": {
+        "display_name": "Albumin",
+        "param_key": "albumin",
+        "type": "numeric",
+        "unit": "g/dL"
+      },
+      "Bicarbonate": {
+        "display_name": "Bicarbonate",
+        "param_key": "bicarbonate",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      }
+    },
+    "computation_context": {
+      "formula": "Albumin Corrected Delta Ratio = (Albumin Corrected AG - 12) / (24 - bicarbonate)",
+      "output_unit": "ratio"
+    }
+  },
+  "PSI Score: Pneumonia Severity Index for CAP": {
+    "calculator_name": "PSI Score: Pneumonia Severity Index for CAP",
+    "category": "severity",
+    "file_path": "psi_score.py",
+    "function_name": "psi_score_explanation",
+    "benchmark_question": "What is the patient's Pneumonia Severity Index (PSI)?",
+    "required_fields": {
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "pH": {
+        "display_name": "pH",
+        "param_key": "pH",
+        "type": "numeric"
+      },
+      "Systolic Blood Pressure": {
+        "display_name": "Systolic Blood Pressure",
+        "param_key": "sys_bp",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "Blood Urea Nitrogen (BUN)": {
+        "display_name": "Blood Urea Nitrogen (BUN)",
+        "param_key": "bun",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Renal disease history": {
+        "display_name": "Renal disease history",
+        "param_key": "renal_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Cerebrovascular disease history": {
+        "display_name": "Cerebrovascular disease history",
+        "param_key": "cerebrovascular_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Congestive Heart Failure": {
+        "display_name": "Congestive Heart Failure",
+        "param_key": "chf",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Nursing home resident": {
+        "display_name": "Nursing home resident",
+        "param_key": "nursing_home_resident",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Partial pressure of oxygen": {
+        "display_name": "Partial pressure of oxygen",
+        "param_key": "partial_pressure_oxygen",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "respiratory rate": {
+        "display_name": "respiratory rate",
+        "param_key": "respiratory_rate",
+        "type": "numeric",
+        "unit": "breaths per minute"
+      },
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "Hematocrit": {
+        "display_name": "Hematocrit",
+        "param_key": "hematocrit",
+        "type": "numeric",
+        "unit": "%"
+      },
+      "Glucose": {
+        "display_name": "Glucose",
+        "param_key": "glucose",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Temperature": {
+        "display_name": "Temperature",
+        "param_key": "temperature",
+        "type": "numeric",
+        "unit": "degrees celsius"
+      },
+      "Pleural effusion on x-ray": {
+        "display_name": "Pleural effusion on x-ray",
+        "param_key": "pleural_effusion",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Altered mental status": {
+        "display_name": "Altered mental status",
+        "param_key": "altered_mental_status",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Neoplastic disease": {
+        "display_name": "Neoplastic disease",
+        "param_key": "neoplastic_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Liver disease history": {
+        "display_name": "Liver disease history",
+        "param_key": "liver_disease",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Glasgow Coma Score (GCS)": {
+    "calculator_name": "Glasgow Coma Score (GCS)",
+    "category": "severity",
+    "file_path": "glasgow_coma_score.py",
+    "function_name": "compute_glasgow_coma_score_explanation",
+    "benchmark_question": "What is the patient's Glasgow Coma Score?",
+    "required_fields": {
+      "Best eye response": {
+        "display_name": "Best eye response",
+        "param_key": "best_eye_response",
+        "type": "categorical",
+        "values": "'eye opening to pain' or 'eye opening to verbal command' or 'eyes open spontaneously' or 'no eye opening'"
+      },
+      "Best verbal response": {
+        "display_name": "Best verbal response",
+        "param_key": "best_verbal_response",
+        "type": "categorical",
+        "values": "'confused' or 'inappropriate words' or 'incomprehensible sounds' or 'no verbal response' or 'oriented'"
+      },
+      "Best motor response": {
+        "display_name": "Best motor response",
+        "param_key": "best_motor_response",
+        "type": "categorical",
+        "values": "'extension to pain' or 'flexion to pain' or 'localizes pain' or 'no motor response' or 'obeys commands' or 'withdrawal from pain'"
+      }
+    },
+    "computation_context": {
+      "formula": "GCS = best_eye_response + best_verbal_response + best_motor_response",
+      "range": "min=3, max=15",
+      "output_unit": "score"
+    }
+  },
+  "APACHE II Score": {
+    "calculator_name": "APACHE II Score",
+    "category": "risk",
+    "file_path": "apache_ii.py",
+    "function_name": "apache_ii_explanation",
+    "benchmark_question": "What is the patient's APACHE II score?",
+    "required_fields": {
+      "History of severe organ failure or immunocompromise": {
+        "display_name": "History of severe organ failure or immunocompromise",
+        "param_key": "organ_failure_or_immunocompromise",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Temperature": {
+        "display_name": "Temperature",
+        "param_key": "temperature",
+        "type": "numeric",
+        "unit": "degrees celsius"
+      },
+      "pH": {
+        "display_name": "pH",
+        "param_key": "pH",
+        "type": "numeric"
+      },
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "respiratory rate": {
+        "display_name": "respiratory rate",
+        "param_key": "respiratory_rate",
+        "type": "numeric",
+        "unit": "breaths per minute"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Potassium": {
+        "display_name": "Potassium",
+        "param_key": "potassium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "creatinine": {
+        "display_name": "creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Acute renal failure": {
+        "display_name": "Acute renal failure",
+        "param_key": "acute_renal_failure",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Chronic renal failure": {
+        "display_name": "Chronic renal failure",
+        "param_key": "chronic_renal_failure",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hematocrit": {
+        "display_name": "Hematocrit",
+        "param_key": "hematocrit",
+        "type": "numeric",
+        "unit": "%"
+      },
+      "White blood cell count": {
+        "display_name": "White blood cell count",
+        "param_key": "wbc",
+        "type": "numeric",
+        "unit": "mm^3"
+      },
+      "Glasgow Coma Score": {
+        "display_name": "Glasgow Coma Score",
+        "param_key": "gcs",
+        "type": "numeric"
+      },
+      "FiO2": {
+        "display_name": "FiO2",
+        "param_key": "fio2",
+        "type": "numeric",
+        "unit": "%"
+      },
+      "PaO2": {
+        "display_name": "PaO2",
+        "param_key": "pao2",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "Diastolic Blood Pressure": {
+        "display_name": "Diastolic Blood Pressure",
+        "param_key": "dia_bp",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "Systolic Blood Pressure": {
+        "display_name": "Systolic Blood Pressure",
+        "param_key": "sys_bp",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "Surgery Type": {
+        "display_name": "Surgery Type",
+        "param_key": "surgery_type",
+        "type": "categorical",
+        "values": "'Elective' or 'Emergency' or 'Nonoperative'"
+      },
+      "A-a gradient": {
+        "display_name": "A-a gradient",
+        "param_key": "a_a_gradient",
+        "type": "numeric"
+      },
+      "Mean arterial pressure": {
+        "display_name": "Mean arterial pressure",
+        "param_key": "mean_arterial_pressure",
+        "type": "numeric",
+        "unit": "mm Hg"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Sequential Organ Failure Assessment (SOFA) Score": {
+    "calculator_name": "Sequential Organ Failure Assessment (SOFA) Score",
+    "category": "risk",
+    "file_path": "sofa.py",
+    "function_name": "compute_sofa_explanation",
+    "benchmark_question": "What is the patient's Sequential Organ Failure Assessment (SOFA) Score?",
+    "required_fields": {
+      "PaO2": {
+        "display_name": "PaO2",
+        "param_key": "pao2",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "FiO2": {
+        "display_name": "FiO2",
+        "param_key": "fio2",
+        "type": "numeric",
+        "unit": "%"
+      },
+      "On mechanical ventilation": {
+        "display_name": "On mechanical ventilation",
+        "param_key": "mechanical_ventilation",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Platelet count": {
+        "display_name": "Platelet count",
+        "param_key": "platelet_count",
+        "type": "numeric",
+        "unit": "\u00b5L"
+      },
+      "Glasgow Coma Score": {
+        "display_name": "Glasgow Coma Score",
+        "param_key": "gcs",
+        "type": "numeric"
+      },
+      "Bilirubin": {
+        "display_name": "Bilirubin",
+        "param_key": "bilirubin",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Hypotension": {
+        "display_name": "Hypotension",
+        "param_key": "hypotension",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Systolic Blood Pressure": {
+        "display_name": "Systolic Blood Pressure",
+        "param_key": "sys_bp",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "Diastolic Blood Pressure": {
+        "display_name": "Diastolic Blood Pressure",
+        "param_key": "dia_bp",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "creatinine": {
+        "display_name": "creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Urine Output": {
+        "display_name": "Urine Output",
+        "param_key": "urine_output",
+        "type": "numeric",
+        "unit": "mL/day"
+      },
+      "norEPINEPHrine": {
+        "display_name": "norEPINEPHrine",
+        "param_key": "norepinephrine",
+        "type": "numeric",
+        "unit": "mcg/kg/min"
+      },
+      "Continuous positive airway pressure": {
+        "display_name": "Continuous positive airway pressure",
+        "param_key": "cpap",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "DOPamine": {
+        "display_name": "DOPamine",
+        "param_key": "dopamine",
+        "type": "numeric",
+        "unit": "mcg/kg/min"
+      },
+      "DOBUTamine": {
+        "display_name": "DOBUTamine",
+        "param_key": "dobutamine",
+        "type": "numeric",
+        "unit": "mcg/kg/min"
+      },
+      "EPINEPHrine": {
+        "display_name": "EPINEPHrine",
+        "param_key": "epinephrine",
+        "type": "numeric",
+        "unit": "mcg/kg/min"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Caprini Score for Venous Thromboembolism (2005)": {
+    "calculator_name": "Caprini Score for Venous Thromboembolism (2005)",
+    "category": "risk",
+    "file_path": "caprini_score.py",
+    "function_name": "caprini_score_explanation",
+    "benchmark_question": "What is the patient's Caprini Score for Venous Thromboembolism?",
+    "required_fields": {
+      "Surgery Type": {
+        "display_name": "Surgery Type",
+        "param_key": "surgery_type",
+        "type": "categorical",
+        "values": "'none' or 'minor' or 'major' or 'laparoscopic' or 'arthroscopic' or 'elective major lower extremity arthroplasty'"
+      },
+      "Major Surgery in the last month": {
+        "display_name": "Major Surgery in the last month",
+        "param_key": "major_surgery_last_month",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Sepsis in the last month": {
+        "display_name": "Sepsis in the last month",
+        "param_key": "sepsis",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Pneumonia in the last month": {
+        "display_name": "Pneumonia in the last month",
+        "param_key": "pneumonia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Immobilizing plaster cast in the last month": {
+        "display_name": "Immobilizing plaster cast in the last month",
+        "param_key": "immobilizing_plaster_cast",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Hip, pelvis, or leg fracture in the last month": {
+        "display_name": "Hip, pelvis, or leg fracture in the last month",
+        "param_key": "hip_pelvis_leg_fracture",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Multiple trauma in the last month": {
+        "display_name": "Multiple trauma in the last month",
+        "param_key": "multiple_trauma",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Acute spinal cord injury causing paralysis in the last month": {
+        "display_name": "Acute spinal cord injury causing paralysis in the last month",
+        "param_key": "acute_spinal_chord_injury",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Varicose veins": {
+        "display_name": "Varicose veins",
+        "param_key": "varicose_veins",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Current swollen legs": {
+        "display_name": "Current swollen legs",
+        "param_key": "current_swollen_legs",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Previously documented Deep Vein Thrombosis": {
+        "display_name": "Previously documented Deep Vein Thrombosis",
+        "param_key": "previous_dvt",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Previously Documented Pulmonary Embolism": {
+        "display_name": "Previously Documented Pulmonary Embolism",
+        "param_key": "previous_pe",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Family history of thrombosis": {
+        "display_name": "Family history of thrombosis",
+        "param_key": "family_history_thrombosis",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Positive prothrombin 20210A": {
+        "display_name": "Positive prothrombin 20210A",
+        "param_key": "positive_prothrombin",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Positive lupus anticoagulant": {
+        "display_name": "Positive lupus anticoagulant",
+        "param_key": "positive_lupus_anticoagulant",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Elevated anticardiolipin antibody": {
+        "display_name": "Elevated anticardiolipin antibody",
+        "param_key": "elevated_anticardiolipin_antibody",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Heparin-induced thrombocytopenia": {
+        "display_name": "Heparin-induced thrombocytopenia",
+        "param_key": "heparin_induced_thrombocytopenia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Mobility": {
+        "display_name": "Mobility",
+        "param_key": "mobility",
+        "type": "categorical",
+        "values": "'confined to bed >72 hours' or 'normal' or 'on bed rest'"
+      },
+      "Acute Myocardial infarction": {
+        "display_name": "Acute Myocardial infarction",
+        "param_key": "acute_myocardial_infarction",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Chronic Obstructive Pulmonary Disease": {
+        "display_name": "Chronic Obstructive Pulmonary Disease",
+        "param_key": "copd",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Present or previous malignancy": {
+        "display_name": "Present or previous malignancy",
+        "param_key": "malignancy",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Female' or 'Male'"
+      },
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "Positive Factor V Leiden": {
+        "display_name": "Positive Factor V Leiden",
+        "param_key": "positive_factor_v",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Elevated serum homocysteine": {
+        "display_name": "Elevated serum homocysteine",
+        "param_key": "serum_homocysteine",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Other congenital or acquired thrombophilia": {
+        "display_name": "Other congenital or acquired thrombophilia",
+        "param_key": "congenital_acquired_thrombophilia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Congestive Heart Failure in the last month": {
+        "display_name": "Congestive Heart Failure in the last month",
+        "param_key": "chf_last_month",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Stroke in the last month": {
+        "display_name": "Stroke in the last month",
+        "param_key": "stroke_last_month",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Current central venous access": {
+        "display_name": "Current central venous access",
+        "param_key": "current_central_venuous",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "History of inflammatory bowel disease": {
+        "display_name": "History of inflammatory bowel disease",
+        "param_key": "inflammatory_bowel_disease",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "BMI": {
+        "display_name": "BMI",
+        "param_key": "bmi",
+        "type": "numeric",
+        "unit": "kg/m^2",
+        "note": "If patient BMI > 25, +1 point is added per Caprini criteria."
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Estimated Due Date": {
+    "calculator_name": "Estimated Due Date",
+    "category": "date",
+    "file_path": "estimated_due_date.py",
+    "function_name": "add_40_weeks_explanation",
+    "benchmark_question": "Using Naegele's Rule for estimated due date based on the last menstrual period and cycle length, what is the the patient's estimated due date? Your response should be in the format of M/D/Y (ie 08/31/2023, 07/03/2000) with just the date and no other text.",
+    "required_fields": {
+      "cycle length": {
+        "display_name": "cycle length",
+        "param_key": "cycle_length",
+        "type": "numeric"
+      },
+      "Last menstrual date": {
+        "display_name": "Last menstrual date",
+        "param_key": "menstrual_date",
+        "type": "date"
+      }
+    },
+    "computation_context": {
+      "formula": "EDD = last_menstrual_date + cycle_length - 14 + 280 days  [Naegele's Rule adjusted]",
+      "standard": "Standard: LMP + 280 days for 28-day cycle",
+      "output_unit": "date MM/DD/YYYY"
+    }
+  },
+  "Steroid Conversion Calculator": {
+    "calculator_name": "Steroid Conversion Calculator",
+    "category": "dosage",
+    "file_path": "steroid_conversion_calculator.py",
+    "function_name": "compute_steroid_conversion_explanation",
+    "benchmark_question": "",
+    "required_fields": {
+      "input steroid": {
+        "display_name": "input steroid",
+        "param_key": "input steroid",
+        "type": "special",
+        "note": "3-part value: [steroid name with route e.g. 'Dexamethasone PO', dose amount, unit e.g. 'mg']. Valid steroid names: Betamethasone IV, Cortisone PO, Dexamethasone IV/PO, Hydrocortisone IV/PO, MethylPrednisoLONE IV/PO, PrednisoLONE PO, PredniSONE PO, Triamcinolone IV."
+      },
+      "target steroid": {
+        "display_name": "target steroid",
+        "param_key": "target steroid",
+        "type": "categorical",
+        "values": "'Betamethasone IV' or 'Cortisone PO' or 'Dexamethasone PO' or 'Hydrocortisone IV' or 'Hydrocortisone PO' or 'MethylPrednisoLONE PO' or 'PredniSONE PO' or 'PrednisoLONE PO' or 'Triamcinolone IV'"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Target weight": {
+    "calculator_name": "Target weight",
+    "category": "physical",
+    "file_path": "target_weight.py",
+    "function_name": "targetweight_explanation",
+    "benchmark_question": "Based on the patient's height and target BMI, what is the patient's target weight in kg?",
+    "required_fields": {
+      "Body Mass Index (BMI)": {
+        "display_name": "Body Mass Index (BMI)",
+        "param_key": "body_mass_index",
+        "type": "numeric",
+        "unit": "kg/m^2"
+      },
+      "height": {
+        "display_name": "height",
+        "param_key": "height",
+        "type": "numeric",
+        "unit": "cm"
+      }
+    },
+    "computation_context": {
+      "formula": "Target Weight = target_BMI \u00d7 (height_m)\u00b2",
+      "output_unit": "kg"
+    }
+  },
+  "Morphine Milligram Equivalents (MME) Calculator": {
+    "calculator_name": "Morphine Milligram Equivalents (MME) Calculator",
+    "category": "dosage",
+    "file_path": "mme.py",
+    "function_name": "mme_explanation",
+    "benchmark_question": "Based on the number of doses per day and the quantity of different doses, what is the patient's daily Morphine Miligram Equivalents (MME)? You should use the conversions from the CDC Clinical Practice Guideline for Prescribing Opioids for Pain \u2014 United States, 2022.",
+    "required_fields": {
+      "Methadone Dose": {
+        "display_name": "Methadone Dose",
+        "param_key": "Methadone Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "Methadone Dose Per Day": {
+        "display_name": "Methadone Dose Per Day",
+        "param_key": "Methadone Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "Tapentadol Dose": {
+        "display_name": "Tapentadol Dose",
+        "param_key": "Tapentadol Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "Tapentadol Dose Per Day": {
+        "display_name": "Tapentadol Dose Per Day",
+        "param_key": "Tapentadol Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "FentaNYL buccal Dose": {
+        "display_name": "FentaNYL buccal Dose",
+        "param_key": "FentaNYL buccal Dose",
+        "type": "numeric",
+        "unit": "\u00b5g"
+      },
+      "FentaNYL buccal Dose Per Day": {
+        "display_name": "FentaNYL buccal Dose Per Day",
+        "param_key": "FentaNYL buccal Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "HYDROmorphone Dose": {
+        "display_name": "HYDROmorphone Dose",
+        "param_key": "HYDROmorphone Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "HYDROmorphone Dose Per Day": {
+        "display_name": "HYDROmorphone Dose Per Day",
+        "param_key": "HYDROmorphone Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "Morphine Dose": {
+        "display_name": "Morphine Dose",
+        "param_key": "Morphine Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "Morphine Dose Per Day": {
+        "display_name": "Morphine Dose Per Day",
+        "param_key": "Morphine Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "Codeine Dose": {
+        "display_name": "Codeine Dose",
+        "param_key": "Codeine Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "Codeine Dose Per Day": {
+        "display_name": "Codeine Dose Per Day",
+        "param_key": "Codeine Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "TraMADol Dose": {
+        "display_name": "TraMADol Dose",
+        "param_key": "TraMADol Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "TraMADol Dose Per Day": {
+        "display_name": "TraMADol Dose Per Day",
+        "param_key": "TraMADol Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "OxyCODONE Dose": {
+        "display_name": "OxyCODONE Dose",
+        "param_key": "OxyCODONE Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "OxyCODONE Dose Per Day": {
+        "display_name": "OxyCODONE Dose Per Day",
+        "param_key": "OxyCODONE Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "HYDROcodone Dose": {
+        "display_name": "HYDROcodone Dose",
+        "param_key": "HYDROcodone Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "HYDROcodone Dose Per Day": {
+        "display_name": "HYDROcodone Dose Per Day",
+        "param_key": "HYDROcodone Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      },
+      "OxyMORphone Dose": {
+        "display_name": "OxyMORphone Dose",
+        "param_key": "OxyMORphone Dose",
+        "type": "numeric",
+        "unit": "mg"
+      },
+      "OxyMORphone Dose Per Day": {
+        "display_name": "OxyMORphone Dose Per Day",
+        "param_key": "OxyMORphone Dose Per Day",
+        "type": "numeric",
+        "unit": "per day"
+      }
+    },
+    "computation_context": {
+      "note": "Apply the standard medical formula for this calculator"
+    }
+  },
+  "Estimated Date of Conception": {
+    "calculator_name": "Estimated Date of Conception",
+    "category": "date",
+    "file_path": "estimated_conception_date.py",
+    "function_name": "add_2_weeks_explanation",
+    "benchmark_question": "Based on the patient's last menstrual period, what is the the patient's estimated date of conception? Your answer should be in the format of M/D/Y (ie 08/31/2023, 07/03/2000) with just the date and not other text.",
+    "required_fields": {
+      "Last menstrual date": {
+        "display_name": "Last menstrual date",
+        "param_key": "menstrual_date",
+        "type": "date"
+      }
+    },
+    "computation_context": {
+      "formula": "Conception Date = LMP + 14 days",
+      "output_unit": "date MM/DD/YYYY"
+    }
+  },
+  "Estimated Gestational Age": {
+    "calculator_name": "Estimated Gestational Age",
+    "category": "date",
+    "file_path": "estimated_gestational_age.py",
+    "function_name": "compute_gestational_age_explanation",
+    "benchmark_question": "Based on the patient's last menstrual period, what is the patient's estimated gestational age? Your answer should be a tuple, specifying the number of weeks and days (i.e. (4 weeks, 3 days), (0 weeks, 5 days), (1 week, 5 days), (8 weeks, 0 days)).",
+    "required_fields": {
+      "Current Date": {
+        "display_name": "Current Date",
+        "param_key": "current_date",
+        "type": "date"
+      },
+      "Last menstrual date": {
+        "display_name": "Last menstrual date",
+        "param_key": "menstrual_date",
+        "type": "date"
+      }
+    },
+    "computation_context": {
+      "formula": "Gestational Age = current_date - LMP",
+      "output_unit": "weeks and days tuple e.g. (8 weeks, 3 days)"
+    }
+  },
+  "ARISCAT Score for Postoperative Pulmonary Complications": {
+    "calculator_name": "ARISCAT Score for Postoperative Pulmonary Complications",
+    "category": "risk",
+    "file_path": "ariscat_score.py",
+    "function_name": "ariscat_score_explanation",
+    "benchmark_question": "What is the patient's ARISCAT score for postoperative pulmonary complications?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "O2 saturation (SpO2)": {
+        "display_name": "O2 saturation (SpO2)",
+        "param_key": "spo2",
+        "type": "numeric",
+        "unit": "%"
+      },
+      "Respiratory infection last month": {
+        "display_name": "Respiratory infection last month",
+        "param_key": "respiratory_infection",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Preoperative anemia (Hct<30%)": {
+        "display_name": "Preoperative anemia (Hct<30%)",
+        "param_key": "preoperative_anemia",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Surgical incision": {
+        "display_name": "Surgical incision",
+        "param_key": "surgical_incision",
+        "type": "categorical",
+        "values": "'peripheral' or 'upper abdominal' or 'intrathoracic'"
+      },
+      "Duration": {
+        "display_name": "Duration",
+        "param_key": "duration",
+        "type": "categorical",
+        "values": "'less than 2 hours' or '2 to 3 hours' or 'more than 3 hours'"
+      },
+      "Emergency procedure": {
+        "display_name": "Emergency procedure",
+        "param_key": "emergency",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "ARISCAT score sums weighted points for age, SpO2, respiratory infection, anemia, incision type, surgery duration, and emergency status."
+    }
+  },
+  "Arterial Blood Gas Analyzer": {
+    "calculator_name": "Arterial Blood Gas Analyzer",
+    "category": "lab test",
+    "file_path": "arterial_blood_gas.py",
+    "function_name": "arterial_blood_gas_explanation",
+    "benchmark_question": "What is the interpretation of this patient's arterial blood gas?",
+    "required_fields": {
+      "pH": {
+        "display_name": "pH",
+        "param_key": "ph",
+        "type": "numeric"
+      },
+      "PaCO2": {
+        "display_name": "PaCO2",
+        "param_key": "paco2",
+        "type": "numeric",
+        "unit": "mm Hg"
+      },
+      "HCO3": {
+        "display_name": "HCO3",
+        "param_key": "hco3",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Sodium": {
+        "display_name": "Sodium",
+        "param_key": "sodium",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Chloride": {
+        "display_name": "Chloride",
+        "param_key": "chloride",
+        "type": "numeric",
+        "unit": "mEq/L"
+      },
+      "Albumin": {
+        "display_name": "Albumin",
+        "param_key": "albumin",
+        "type": "numeric",
+        "unit": "g/dL"
+      }
+    },
+    "computation_context": {
+      "note": "Interprets acid-base status from pH, PaCO2, HCO3, and computes anion gap from sodium, chloride, albumin."
+    }
+  },
+  "Atherosclerotic Cardiovascular Disease Risk Algorithm": {
+    "calculator_name": "Atherosclerotic Cardiovascular Disease Risk Algorithm",
+    "category": "risk",
+    "file_path": "ascvd_risk.py",
+    "function_name": "ascvd_risk_explanation",
+    "benchmark_question": "What is the patient's 10-year ASCVD risk?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Male' or 'Female'"
+      },
+      "Total cholesterol": {
+        "display_name": "Total cholesterol",
+        "param_key": "total_cholesterol",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "HDL": {
+        "display_name": "HDL",
+        "param_key": "hdl_cholesterol",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "SBP": {
+        "display_name": "SBP",
+        "param_key": "systolic_bp",
+        "type": "numeric",
+        "unit": "mmHg"
+      },
+      "Race": {
+        "display_name": "Race",
+        "param_key": "race",
+        "type": "categorical",
+        "values": "'white' or 'black' or 'other'"
+      },
+      "BP treated": {
+        "display_name": "BP treated",
+        "param_key": "bp_treated",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Pooled Cohort Equations for 10-year ASCVD risk, using age, sex, race, cholesterol, HDL, systolic BP, and treatment status."
+    }
+  },
+  "CIWA-Ar for Alcohol Withdrawal": {
+    "calculator_name": "CIWA-Ar for Alcohol Withdrawal",
+    "category": "severity",
+    "file_path": "ciwa_ar.py",
+    "function_name": "ciwa_ar_explanation",
+    "benchmark_question": "What is the patient's CIWA-Ar score for alcohol withdrawal?",
+    "required_fields": {
+      "Nausea/vomiting": {
+        "display_name": "Nausea/vomiting",
+        "param_key": "nausea_vomiting",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      },
+      "Tremor": {
+        "display_name": "Tremor",
+        "param_key": "tremor",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      },
+      "Sweats": {
+        "display_name": "Sweats",
+        "param_key": "paroxysmal_sweats",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      },
+      "Anxiety": {
+        "display_name": "Anxiety",
+        "param_key": "anxiety",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      },
+      "Agitation": {
+        "display_name": "Agitation",
+        "param_key": "agitation",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      },
+      "Tactile disturbances": {
+        "display_name": "Tactile disturbances",
+        "param_key": "tactile_disturbances",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      },
+      "Auditory disturbances": {
+        "display_name": "Auditory disturbances",
+        "param_key": "auditory_disturbances",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      },
+      "Headache": {
+        "display_name": "Headache",
+        "param_key": "headache",
+        "type": "numeric",
+        "unit": "points (0-7)"
+      }
+    },
+    "computation_context": {
+      "note": "Sums 10 CIWA-Ar item scores (most scored 0-7, orientation scored 0-4) for alcohol withdrawal severity."
+    }
+  },
+  "GRACE ACS Risk and Mortality Calculator": {
+    "calculator_name": "GRACE ACS Risk and Mortality Calculator",
+    "category": "risk",
+    "file_path": "grace_acs.py",
+    "function_name": "grace_acs_explanation",
+    "benchmark_question": "What is the patient's GRACE ACS risk score?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "HR": {
+        "display_name": "HR",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "bpm"
+      },
+      "SBP": {
+        "display_name": "SBP",
+        "param_key": "systolic_bp",
+        "type": "numeric",
+        "unit": "mmHg"
+      },
+      "Creatinine": {
+        "display_name": "Creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Cardiac arrest": {
+        "display_name": "Cardiac arrest",
+        "param_key": "cardiac_arrest",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "ST deviation": {
+        "display_name": "ST deviation",
+        "param_key": "st_deviation",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Elevated enzymes": {
+        "display_name": "Elevated enzymes",
+        "param_key": "elevated_enzymes",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Killip class": {
+        "display_name": "Killip class",
+        "param_key": "killip_class",
+        "type": "numeric",
+        "unit": "class (1-4)"
+      }
+    },
+    "computation_context": {
+      "note": "GRACE ACS risk score for mortality prediction using age, HR, SBP, creatinine, Killip class, cardiac arrest, ST deviation, and elevated cardiac enzymes."
+    }
+  },
+  "General Anxiety Disorder-7": {
+    "calculator_name": "General Anxiety Disorder-7",
+    "category": "severity",
+    "file_path": "gad7.py",
+    "function_name": "gad7_explanation",
+    "benchmark_question": "What is the patient's GAD-7 score?",
+    "required_fields": {
+      "Feeling nervous/anxious/on edge": {
+        "display_name": "Feeling nervous/anxious/on edge",
+        "param_key": "feeling_nervous",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Not able to stop or control worrying": {
+        "display_name": "Not able to stop or control worrying",
+        "param_key": "not_able_to_stop_worrying",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Worrying too much about different things": {
+        "display_name": "Worrying too much about different things",
+        "param_key": "worrying_too_much",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Trouble relaxing": {
+        "display_name": "Trouble relaxing",
+        "param_key": "trouble_relaxing",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Being so restless it is hard to sit still": {
+        "display_name": "Being so restless it is hard to sit still",
+        "param_key": "being_restless",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Becoming easily annoyed or irritable": {
+        "display_name": "Becoming easily annoyed or irritable",
+        "param_key": "easily_annoyed",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Feeling afraid as if something awful might happen": {
+        "display_name": "Feeling afraid as if something awful might happen",
+        "param_key": "feeling_afraid",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      }
+    },
+    "computation_context": {
+      "note": "Sums 7 GAD-7 item scores (0=not at all to 3=nearly every day) for generalized anxiety severity."
+    }
+  },
+  "Gupta Perioperative Risk for Myocardial Infarction or Cardiac Arrest": {
+    "calculator_name": "Gupta Perioperative Risk for Myocardial Infarction or Cardiac Arrest",
+    "category": "risk",
+    "file_path": "gupta_perioperative.py",
+    "function_name": "gupta_perioperative_explanation",
+    "benchmark_question": "What is the patient's Gupta Perioperative Risk for MI or Cardiac Arrest?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "ASA class": {
+        "display_name": "ASA class",
+        "param_key": "asa_class",
+        "type": "numeric",
+        "unit": "class (1-5)"
+      },
+      "Dependency": {
+        "display_name": "Dependency",
+        "param_key": "functional_status",
+        "type": "categorical",
+        "values": "'independent' or 'partially dependent' or 'totally dependent'"
+      },
+      "Creatinine": {
+        "display_name": "Creatinine",
+        "param_key": "creatinine",
+        "type": "numeric",
+        "unit": "mg/dL"
+      },
+      "Surgery": {
+        "display_name": "Surgery",
+        "param_key": "surgery_type",
+        "type": "categorical",
+        "values": "'anorectal' or 'aortic' or 'bariatric' or 'brain' or 'breast' or 'cardiac' or 'gallbladder' or 'hepatic' or 'hernia' or 'intestinal' or 'neck' or 'obstetric/gynecologic' or 'orthopedic/back' or 'other' or 'peripheral vascular' or 'rectal' or 'renal' or 'skin' or 'spine' or 'stomach/esophageal' or 'thoracic' or 'urologic' or 'vein'"
+      }
+    },
+    "computation_context": {
+      "note": "Logistic regression risk score using age, ASA class, functional dependency, creatinine, and surgery type coefficients."
+    }
+  },
+  "NIH Stroke Scale/Score": {
+    "calculator_name": "NIH Stroke Scale/Score",
+    "category": "severity",
+    "file_path": "nihss.py",
+    "function_name": "compute_nihss_score",
+    "benchmark_question": "What is the patient's NIH Stroke Scale (NIHSS) score?",
+    "required_fields": {
+      "LOC": {
+        "display_name": "LOC",
+        "param_key": "LOC",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "LOC Questions": {
+        "display_name": "LOC Questions",
+        "param_key": "LOC Questions",
+        "type": "numeric",
+        "unit": "points (0-2)"
+      },
+      "LOC Commands": {
+        "display_name": "LOC Commands",
+        "param_key": "LOC Commands",
+        "type": "numeric",
+        "unit": "points (0-2)"
+      },
+      "Gaze": {
+        "display_name": "Gaze",
+        "param_key": "Gaze",
+        "type": "numeric",
+        "unit": "points (0-2)"
+      },
+      "Visual": {
+        "display_name": "Visual",
+        "param_key": "Visual",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Facial Palsy": {
+        "display_name": "Facial Palsy",
+        "param_key": "Facial Palsy",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Left Arm Motor": {
+        "display_name": "Left Arm Motor",
+        "param_key": "Left Arm Motor",
+        "type": "numeric",
+        "unit": "points (0-4)"
+      },
+      "Right Arm Motor": {
+        "display_name": "Right Arm Motor",
+        "param_key": "Right Arm Motor",
+        "type": "numeric",
+        "unit": "points (0-4)"
+      },
+      "Left Leg Motor": {
+        "display_name": "Left Leg Motor",
+        "param_key": "Left Leg Motor",
+        "type": "numeric",
+        "unit": "points (0-4)"
+      },
+      "Right Leg Motor": {
+        "display_name": "Right Leg Motor",
+        "param_key": "Right Leg Motor",
+        "type": "numeric",
+        "unit": "points (0-4)"
+      },
+      "Ataxia": {
+        "display_name": "Ataxia",
+        "param_key": "Ataxia",
+        "type": "numeric",
+        "unit": "points (0-2)"
+      },
+      "Sensory": {
+        "display_name": "Sensory",
+        "param_key": "Sensory",
+        "type": "numeric",
+        "unit": "points (0-2)"
+      },
+      "Language": {
+        "display_name": "Language",
+        "param_key": "Language",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Dysarthria": {
+        "display_name": "Dysarthria",
+        "param_key": "Dysarthria",
+        "type": "numeric",
+        "unit": "points (0-2)"
+      },
+      "Neglect": {
+        "display_name": "Neglect",
+        "param_key": "Neglect",
+        "type": "numeric",
+        "unit": "points (0-2)"
+      }
+    },
+    "computation_context": {
+      "note": "Sums 15 NIHSS item scores across consciousness, gaze, vision, motor, sensory, language, and neglect domains."
+    }
+  },
+  "PECARN Pediatric Head Injury/Trauma Algorithm": {
+    "calculator_name": "PECARN Pediatric Head Injury/Trauma Algorithm",
+    "category": "risk",
+    "file_path": "pecarn_head_injury.py",
+    "function_name": "pecarn_head_injury_explanation",
+    "benchmark_question": "What is the PECARN recommendation for this pediatric head injury patient?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "GCS": {
+        "display_name": "GCS",
+        "param_key": "gcs",
+        "type": "numeric",
+        "unit": "pts"
+      },
+      "Risk level": {
+        "display_name": "Risk level",
+        "param_key": "risk_level_hint",
+        "type": "categorical",
+        "values": "'CT recommended' or 'Observation' or 'Low risk'"
+      }
+    },
+    "computation_context": {
+      "note": "PECARN algorithm stratifies risk of clinically important TBI using age, GCS, altered mental status, and other clinical findings."
+    }
+  },
+  "Patient Health Questionnaire-9": {
+    "calculator_name": "Patient Health Questionnaire-9",
+    "category": "severity",
+    "file_path": "phq9.py",
+    "function_name": "phq9_explanation",
+    "benchmark_question": "What is the patient's PHQ-9 score?",
+    "required_fields": {
+      "Little interest or pleasure in doing things": {
+        "display_name": "Little interest or pleasure in doing things",
+        "param_key": "little_interest",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Feeling down, depressed, or hopeless": {
+        "display_name": "Feeling down, depressed, or hopeless",
+        "param_key": "feeling_down",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Trouble falling or staying asleep, or sleeping too much": {
+        "display_name": "Trouble falling or staying asleep, or sleeping too much",
+        "param_key": "sleep_trouble",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Feeling tired or having little energy": {
+        "display_name": "Feeling tired or having little energy",
+        "param_key": "little_energy",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Poor appetite or overeating": {
+        "display_name": "Poor appetite or overeating",
+        "param_key": "poor_appetite",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Feeling bad about yourself or that you are a failure": {
+        "display_name": "Feeling bad about yourself or that you are a failure",
+        "param_key": "feeling_bad",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Trouble concentrating on things": {
+        "display_name": "Trouble concentrating on things",
+        "param_key": "trouble_concentrating",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Moving or speaking slowly, or being fidgety/restless": {
+        "display_name": "Moving or speaking slowly, or being fidgety/restless",
+        "param_key": "moving_slowly",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      },
+      "Thoughts that you would be better off dead or of hurting yourself": {
+        "display_name": "Thoughts that you would be better off dead or of hurting yourself",
+        "param_key": "thoughts_of_self_harm",
+        "type": "numeric",
+        "unit": "points (0-3)"
+      }
+    },
+    "computation_context": {
+      "note": "Sums 9 PHQ-9 item scores (0=not at all to 3=nearly every day) for depression severity."
+    }
+  },
+  "Pregnancy Due Dates Calculator": {
+    "calculator_name": "Pregnancy Due Dates Calculator",
+    "category": "date",
+    "file_path": "pregnancy_due_dates.py",
+    "function_name": "pregnancy_due_dates_explanation",
+    "benchmark_question": "What is the patient's estimated due date / gestational age?",
+    "required_fields": {
+      "LMP": {
+        "display_name": "LMP",
+        "param_key": "last_menstrual_period",
+        "type": "date",
+        "format": "MM/DD/YYYY"
+      },
+      "Cycle length": {
+        "display_name": "Cycle length",
+        "param_key": "cycle_length",
+        "type": "numeric",
+        "unit": "days"
+      },
+      "Reference date": {
+        "display_name": "Reference date",
+        "param_key": "reference_date",
+        "type": "date",
+        "format": "MM/DD/YYYY"
+      }
+    },
+    "computation_context": {
+      "note": "Naegele's rule adjusted for cycle length: EDD = LMP + 280 days + (cycle_length - 28)."
+    }
+  },
+  "SIRS, Sepsis, and Septic Shock Criteria": {
+    "calculator_name": "SIRS, Sepsis, and Septic Shock Criteria",
+    "category": "severity",
+    "file_path": "sirs_criteria.py",
+    "function_name": "sirs_criteria_explanation",
+    "benchmark_question": "How many SIRS criteria does the patient meet?",
+    "required_fields": {
+      "Temperature": {
+        "display_name": "Temperature",
+        "param_key": "temperature",
+        "type": "numeric",
+        "unit": "degrees fahrenheit"
+      },
+      "Heart Rate or Pulse": {
+        "display_name": "Heart Rate or Pulse",
+        "param_key": "heart_rate",
+        "type": "numeric",
+        "unit": "beats per minute"
+      },
+      "respiratory rate": {
+        "display_name": "respiratory rate",
+        "param_key": "respiratory_rate",
+        "type": "numeric",
+        "unit": "breaths per minute"
+      },
+      "White blood cell count": {
+        "display_name": "White blood cell count",
+        "param_key": "wbc",
+        "type": "numeric",
+        "unit": "\u00b5L"
+      }
+    },
+    "computation_context": {
+      "note": "Counts criteria met: temp >38C or <36C, HR>90, RR>20 or PaCO2<32, WBC>12000 or <4000."
+    }
+  },
+  "STOP-BANG Score for Obstructive Sleep Apnea": {
+    "calculator_name": "STOP-BANG Score for Obstructive Sleep Apnea",
+    "category": "risk",
+    "file_path": "stop_bang.py",
+    "function_name": "stop_bang_explanation",
+    "benchmark_question": "What is the patient's STOP-BANG score for obstructive sleep apnea risk?",
+    "required_fields": {
+      "age": {
+        "display_name": "age",
+        "param_key": "age",
+        "type": "numeric",
+        "unit": "years"
+      },
+      "BMI": {
+        "display_name": "BMI",
+        "param_key": "bmi",
+        "type": "numeric",
+        "unit": "kg/m2"
+      },
+      "Neck": {
+        "display_name": "Neck",
+        "param_key": "neck_circumference",
+        "type": "numeric",
+        "unit": "cm"
+      },
+      "sex": {
+        "display_name": "sex",
+        "param_key": "sex",
+        "type": "categorical",
+        "values": "'Male' or 'Female'"
+      },
+      "Tired": {
+        "display_name": "Tired",
+        "param_key": "tired",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "BP treated": {
+        "display_name": "BP treated",
+        "param_key": "bp_treatment",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Snores": {
+        "display_name": "Snores",
+        "param_key": "snoring",
+        "type": "boolean",
+        "values": "True or False"
+      },
+      "Observed apnea": {
+        "display_name": "Observed apnea",
+        "param_key": "observed_apnea",
+        "type": "boolean",
+        "values": "True or False"
+      }
+    },
+    "computation_context": {
+      "note": "Sums 8 STOP-BANG criteria (Snoring, Tiredness, Observed apnea, BP, BMI>35, Age>50, Neck>40cm, male Sex) for OSA risk."
+    }
+  }
+}
